@@ -5,6 +5,11 @@ use crate::{
 use ggez::{event::EventHandler, graphics::{Canvas, Color, DrawMode, DrawParam, Mesh, Rect}, *};
 use rand::Rng;
 
+pub enum Ate {
+    Food, 
+    Itself,
+}
+
 pub struct Food {
     position: GridPosition,
     food: graphics::Mesh,
@@ -14,8 +19,8 @@ impl Food {
     pub fn new(ctx: &mut Context) -> Food {
         let mut rng = rand::thread_rng();
 
-        let x = rng.gen_range(0.0..GRID_SIZE.0);
-        let y = rng.gen_range(0.0..GRID_SIZE.1);
+        let x = rng.gen_range(0.0..930.0);
+        let y = rng.gen_range(0.0..620.0);
 
         println!("Screen Size: {:?}", SCREEN_SIZE);
 

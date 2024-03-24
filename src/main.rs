@@ -4,7 +4,7 @@ use ggez::{
 };
 use background::Background;
 use head::Head;
-use crate::data::{GRID_DIMENSION, SCREEN_SIZE};
+use crate::data::SCREEN_SIZE;
 
 mod data;
 pub mod head;
@@ -27,7 +27,7 @@ impl GameState {
 }
 
 impl EventHandler for GameState {
-    fn draw(&mut self, mut ctx: &mut Context) -> Result<(), GameError> {
+    fn draw(&mut self, ctx: &mut Context) -> Result<(), GameError> {
         let mut canvas = 
             Canvas::from_frame(ctx,  Color::BLACK);
 
@@ -49,8 +49,8 @@ impl EventHandler for GameState {
     }
 
     fn update(&mut self, ctx: &mut Context) -> Result<(), GameError> {
-        self.food.update(ctx);
-        self.snake.update(ctx);
+        self.food.update(ctx)?;
+        self.snake.update(ctx)?;
 
         Ok(())
     }

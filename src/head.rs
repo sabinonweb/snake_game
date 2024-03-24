@@ -29,17 +29,15 @@ pub struct Head {
 }
 
 impl Head {
-    pub fn new(ctx :  &mut Context) -> GameResult<Head> {
-        let mut random = thread_rng();
-        let x = 0.0;
-        let y = 0.0;
+    pub fn new(ctx : &mut Context) -> GameResult<Head> {
+        let (x, y) = Head::random_pos();
 
         let rectangle = Mesh::new_rectangle(
             ctx,
             DrawMode::fill(),
             Rect {
-                x: x,
-                y: y,
+                x,
+                y,
                 w: GRID_DIMENSION.0,
                 h: GRID_DIMENSION.1,
             },
@@ -55,6 +53,14 @@ impl Head {
             position: GridPosition::new(x, y)?,
             head: rectangle
         })
+    }
+
+    pub fn random_pos() -> (f32, f32) {
+        let mut random = thread_rng();
+        let x = random.gen_range(0..SCREEN_SIZE.0 as i32);
+        let y = random.gen_range(0..SCREEN_SIZE.1 as i32);
+
+        (x as f32, y as f32)
     }
 
     pub fn draw(&mut self, ctx: &mut Context, canvas: &mut Canvas) -> GameResult {
