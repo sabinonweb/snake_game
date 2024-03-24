@@ -1,51 +1,69 @@
+use food::Food;
 use ggez::{
-    glam::Vec2, graphics::{Canvas, Color, DrawMode, Rect}, *
+    event::EventHandler, glam::Vec2, graphics::{Canvas, Color, DrawMode, Rect}, winit::event_loop, *
 };
+use background::Background;
+use head::Head;
+use crate::data::{GRID_DIMENSION, SCREEN_SIZE};
 
-pub struct Grid {
-    length: f32,
-    rectangle: graphics::Mesh,
+mod data;
+pub mod head;
+mod direction;
+mod food;
+mod background;
+
+pub struct GameState {
+    food: Food,
+    snake: Head,
 }
 
-impl Grid {
-    fn new(ctx: &mut Context) -> GameResult<Grid> {
-        let rectangle = graphics::Mesh::new_rectangle(
-            ctx,
-            DrawMode::fill(), 
-            Rect {
-                x: 10.0,
-                y: 10.0,
-                w: 32.0,
-                h: 32.0,
-            }, 
-            Color::WHITE
-        )?;
-
-        Ok(Grid {length: 10.0, rectangle})
+impl GameState {
+    fn new(ctx: &mut Context) -> GameState {
+        GameState {
+            food: Food::new(ctx),
+            snake: Head::new(ctx).unwrap(),
+        }
     }
 }
 
-impl event::EventHandler<ggez::GameError> for Grid {
-    fn draw(&mut self, ctx: &mut Context) -> Result<(), ggez::GameError> {
+impl EventHandler for GameState {
+    fn draw(&mut self, mut ctx: &mut Context) -> Result<(), GameError> {
         let mut canvas = 
-            Canvas::from_frame(ctx, graphics::Color::from([0.1, 0.2, 0.3, 1.0]));
+            Canvas::from_frame(ctx,  Color::BLACK);
 
-        canvas.draw(&self.rectangle, Vec2::new(self.length, 300.0));
+        Background::draw(&mut canvas, ctx)?;
+
+        self.food.draw(ctx, &mut canvas)?;
+        self.snake.draw(ctx, &mut canvas)?;
+
+        canvas.set_screen_coordinates(Rect {
+            x: 50.0,
+            y: 50.0,
+            w: 100.0,
+            h: 100.0,
+        });
 
         canvas.finish(ctx)?;
 
         Ok(())
     }
 
-    fn update(&mut self, _ctx: &mut Context) -> Result<(), ggez::GameError> {
-        self.length = self.length + 1.0;
+    fn update(&mut self, ctx: &mut Context) -> Result<(), GameError> {
+        self.food.update(ctx);
+        self.snake.update(ctx);
+
         Ok(())
     }
 }
 
+
 pub fn main() -> GameResult {
-    let cb = ggez::ContextBuilder::new("snake_game", "sabinonweb");
-    let (mut ctx, event_loop) = cb.build()?;
-    let state = Grid::new(&mut ctx)?;
+    let (mut ctx, event_loop) = ContextBuilder::new(
+        "snake_game", "sabinonweb"
+    )
+    .window_setup(conf::WindowSetup::default().title("snake_game"))
+    .window_mode(conf::WindowMode::default().transparent(true).maximized(false).dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1))
+    .build()?;
+    let state = GameState::new(&mut ctx);
     event::run(ctx, event_loop, state)
-}
+} 
