@@ -1,16 +1,19 @@
 use ggez::*;
-use crate::{background::Grid, head::Head};
+use crate::{background::Grid, head::Head, random::random};
+use std::collections::VecDeque;
 
 pub struct Snake {
     head: Head,
-    body: Vec<Grid>,
+    body: VecDeque<Grid>,
 }
 
 impl Snake {
-    fn new(ctx: Context) -> Snake {
+    pub fn new(mut ctx: &mut Context) -> Snake {
         Snake {
-            head: Head::new(ctx),
-            body: Vec::new(),
+            head: Head::new(&mut ctx).unwrap(),
+            body: VecDeque::new(),
         }    
     }
+
+
 }
