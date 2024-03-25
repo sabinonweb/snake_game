@@ -2,9 +2,6 @@ use food::Food;
 use ggez::{
     event::EventHandler, glam::Vec2, graphics::{Canvas, Color, DrawMode, Rect}, winit::event_loop, *
 };
-use background::Grid;
-use snake::Snake;
-use crate::data::SCREEN_SIZE;
 
 mod data;
 mod head;
