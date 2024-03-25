@@ -2,26 +2,25 @@ use food::Food;
 use ggez::{
     event::EventHandler, glam::Vec2, graphics::{Canvas, Color, DrawMode, Rect}, winit::event_loop, *
 };
-use head::Head;
-use crate::background::Grid;
-use crate::data::SCREEN_SIZE;
 
 mod data;
-pub mod head;
+mod head;
 mod direction;
 mod food;
 mod background;
+mod snake;
+mod random;
 
 pub struct GameState {
     food: Food,
-    snake: Head,
+    snake: Snake,
 }
 
 impl GameState {
     fn new(ctx: &mut Context) -> GameState {
         GameState {
             food: Food::new(ctx),
-            snake: Head::new(ctx).unwrap(),
+            snake: Snake::new(ctx),
         }
     }
 }
@@ -34,7 +33,7 @@ impl EventHandler for GameState {
         Grid::draw(&mut canvas, ctx)?;
 
         self.food.draw(ctx, &mut canvas)?;
-        self.snake.draw(ctx, &mut canvas)?;
+        // self.snake.draw(ctx, &mut canvas)?;
 
         canvas.set_screen_coordinates(Rect {
             x: 50.0,
@@ -50,7 +49,7 @@ impl EventHandler for GameState {
 
     fn update(&mut self, ctx: &mut Context) -> Result<(), GameError> {
         self.food.update(ctx)?;
-        self.snake.update(ctx)?;
+        // self.snake.update(ctx)?;
 
         Ok(())
     }

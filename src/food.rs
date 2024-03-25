@@ -1,14 +1,11 @@
+use std::collections::HashSet;
+
 use crate::{
     data::{GRID_DIMENSION, GRID_SIZE, SCREEN_SIZE},
-    head::GridPosition
+    head::GridPosition,
+    random::random,
 };
-use ggez::{event::EventHandler, graphics::{Canvas, Color, DrawMode, DrawParam, Mesh, Rect}, *};
-use rand::Rng;
-
-pub enum Ate {
-    Food, 
-    Itself,
-}
+use ggez::{graphics::{Canvas, Color, DrawMode, DrawParam, Mesh, Rect}, *};
 
 pub struct Food {
     position: GridPosition,
@@ -17,14 +14,7 @@ pub struct Food {
 
 impl Food {
     pub fn new(ctx: &mut Context) -> Food {
-        let mut rng = rand::thread_rng();
-
-        let x = rng.gen_range(0.0..930.0);
-        let y = rng.gen_range(0.0..620.0);
-
-        println!("Screen Size: {:?}", SCREEN_SIZE);
-
-        println!("x = {}, y = {}", x, y);
+        let (x, y) = random();
 
         let food = Mesh::new_rectangle(
             ctx, 

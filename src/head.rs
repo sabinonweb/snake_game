@@ -2,9 +2,7 @@ use ggez::{
     event::EventHandler, graphics::{Canvas, Color, DrawMode, Mesh, Rect}, input::keyboard, *
 };
 use crate::{
-    data::{GRID_DIMENSION, SCREEN_SIZE},
-    direction::Direction,
-    Vec2,
+    data::{GRID_DIMENSION, SCREEN_SIZE}, direction::Direction, random::random, Vec2
 };
 use rand::{thread_rng, Rng};
 
@@ -30,7 +28,7 @@ pub struct Head {
 
 impl Head {
     pub fn new(ctx : &mut Context) -> GameResult<Head> {
-        let (x, y) = Head::random_pos();
+        let (x, y) = random();
 
         let rectangle = Mesh::new_rectangle(
             ctx,
@@ -53,14 +51,6 @@ impl Head {
             position: GridPosition::new(x, y)?,
             head: rectangle
         })
-    }
-
-    pub fn random_pos() -> (f32, f32) {
-        let mut random = thread_rng();
-        let x = random.gen_range(0..SCREEN_SIZE.0 as i32);
-        let y = random.gen_range(0..SCREEN_SIZE.1 as i32);
-
-        (x as f32, y as f32)
     }
 
     pub fn draw(&mut self, ctx: &mut Context, canvas: &mut Canvas) -> GameResult {

@@ -37,7 +37,7 @@ impl Grid {
             for j in (0..SCREEN_SIZE.1 as i32).step_by(GRID_SIZE.1 as usize) {
                 let background = Grid::new(i as f32, j as f32);
                 background.draw_rect(ctx, canvas)?;
-                println!("i = {} j = {}", i, j)
+                // println!("i = {} j = {}", i, j)
             }
         }
 
