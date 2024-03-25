@@ -2,8 +2,8 @@ use food::Food;
 use ggez::{
     event::EventHandler, glam::Vec2, graphics::{Canvas, Color, DrawMode, Rect}, winit::event_loop, *
 };
-use background::Background;
 use head::Head;
+use crate::background::Grid;
 use crate::data::SCREEN_SIZE;
 
 mod data;
@@ -31,7 +31,7 @@ impl EventHandler for GameState {
         let mut canvas = 
             Canvas::from_frame(ctx,  Color::BLACK);
 
-        Background::draw(&mut canvas, ctx)?;
+        Grid::draw(&mut canvas, ctx)?;
 
         self.food.draw(ctx, &mut canvas)?;
         self.snake.draw(ctx, &mut canvas)?;
