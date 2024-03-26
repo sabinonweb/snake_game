@@ -1,18 +1,19 @@
 use ggez::{
-    event::EventHandler, graphics::{Canvas, Color, DrawMode, Mesh, Rect}, input::keyboard, *
+    event::EventHandler, graphics::{Canvas, Color, DrawMode, DrawParam, Mesh, Rect}, input::keyboard, *
 };
 use crate::{
-    data::{GRID_DIMENSION, SCREEN_SIZE}, direction::Direction, random::random, Vec2
+    data::{FPS, GRID_DIMENSION, SCREEN_SIZE}, direction::Direction, random::random, Vec2
 };
 use rand::{thread_rng, Rng};
 
+#[derive(PartialEq, Eq)]
 pub struct GridPosition {
-    pub x: f32,
-    pub y: f32,
+    pub x: i32,
+    pub y: i32,
 }
 
 impl GridPosition {
-    pub fn new(x: f32, y: f32) -> GameResult<GridPosition> {
+    pub fn new(x: i32, y: i32) -> GameResult<GridPosition> {
         Ok(GridPosition {
             x,
             y,
@@ -21,13 +22,13 @@ impl GridPosition {
     }
 }
 
-pub struct Head {
+pub struct Bit {
     position: GridPosition,
-    head: graphics::Mesh,
+    bit: graphics::Mesh,
 }
 
-impl Head {
-    pub fn new(ctx : &mut Context) -> GameResult<Head> {
+impl Bit {
+    pub fn new(ctx : &mut Context) -> GameResult<Bit> {
         let (x, y) = random();
 
         let rectangle = Mesh::new_rectangle(
@@ -47,22 +48,22 @@ impl Head {
             }
         )?;
 
-        Ok(Head {
-            position: GridPosition::new(x, y)?,
-            head: rectangle
+        Ok(Bit {
+            position: GridPosition::new(x as i32, y as i32)?,
+            bit: rectangle
         })
     }
 
     pub fn draw(&mut self, ctx: &mut Context, canvas: &mut Canvas) -> GameResult {
       
-        canvas.draw(&self.head, Vec2::new(self.position.x, 300.0));
+        canvas.draw(&self.bit, DrawParam::new());
         
         
         Ok(())
     }
 
     pub fn update(&mut self, ctx: &mut Context) -> GameResult {
-        self.position.x += 8.0;
+        self.position.x += FPS;
 
         Ok(())
     }

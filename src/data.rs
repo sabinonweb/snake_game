@@ -5,3 +5,5 @@ pub const SCREEN_SIZE: (f32, f32) = (
     GRID_SIZE.0 * GRID_DIMENSION.0,
     GRID_SIZE.1 * GRID_DIMENSION.1
 );
+
+pub const FPS: i32 = 8;

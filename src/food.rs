@@ -2,10 +2,15 @@ use std::collections::HashSet;
 
 use crate::{
     data::{GRID_DIMENSION, GRID_SIZE, SCREEN_SIZE},
-    head::GridPosition,
+    bit::GridPosition,
     random::random,
 };
 use ggez::{graphics::{Canvas, Color, DrawMode, DrawParam, Mesh, Rect}, *};
+
+pub enum Ate {
+    Food,
+    Itself,
+}
 
 pub struct Food {
     position: GridPosition,
@@ -28,7 +33,7 @@ impl Food {
             Color::RED,
         ).unwrap();
 
-        Food { position: GridPosition::new(x, y).unwrap(), food }
+        Food { position: GridPosition::new(x as i32, y as i32).unwrap(), food }
     }
 
     pub fn draw(&mut self, ctx: &mut Context, canvas: &mut Canvas) -> GameResult {
@@ -43,7 +48,7 @@ impl Food {
     }
     
     pub fn update(&mut self, _ctx: &mut Context) -> Result<(), GameError> {
-        self.position.x  += 0.7;
+        self.position.x  += 7;
 
         Ok(())
     }
