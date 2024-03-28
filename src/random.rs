@@ -15,7 +15,12 @@ pub(crate) fn random() -> (i32, i32) {
         } 
     }
 
-    println!("x = {:?}\n y= {:?}", random_x, random_y);
+    let mut x: Vec<i32> = random_x.clone().into_iter().collect();
+    let mut y: Vec<i32> = random_y.clone().into_iter().collect();
+    x.sort();
+    y.sort();
+
+    // println!("x = {:?}\n y= {:?}\n", x, y);
 
     (
         *random_x.iter().choose(&mut random).unwrap(), 

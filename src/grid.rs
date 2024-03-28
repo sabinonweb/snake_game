@@ -2,7 +2,7 @@ use crate::{
     data::GRID_DIMENSION,
     GameState,
 };
-use ggez::{graphics::{Canvas, Color, DrawMode, DrawParam, Mesh, Rect}, *};
+use ggez::{graphics::{Canvas, Color, DrawMode, DrawParam, Mesh, Rect}, input::keyboard::KeyCode, *};
 
 #[derive(Clone, Copy)]
 pub struct Grid {
@@ -48,18 +48,35 @@ impl From<Grid> for (i32, i32) {
     }
 }
 
+#[derive(Debug, PartialEq)]
 pub enum Direction {
     Up,
     Down, 
     Left, 
     Right,
-    None,
+    None
 }
 
 impl Direction {
-    pub fn new() -> Direction {
-        Direction::Right
-    } 
+    pub fn inverse(self) -> Direction {
+        match self {
+            Direction::Up => Direction::Down,
+            Direction::Down => Direction::Up,
+            Direction::Right => Direction::Left,
+            Direction::Left => Direction::Right,
+            _ => Direction::None,
+        }
+    }
+
+    pub fn from_keyword(key: KeyCode) -> Direction {
+        match key {
+            KeyCode::W => Direction::Up,
+            KeyCode::A => Direction::Left,
+            KeyCode::S => Direction::Down,
+            KeyCode::D => Direction::Right,
+            _ => Direction::None,
+        }
+    }
 }
 
 
