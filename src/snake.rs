@@ -28,8 +28,8 @@ impl Snake {
         Snake {
            head: Grid::new(pos.x + GRID_DIMENSION.0 as i32, pos.y),
             body,
-            prev_dir: Direction::Right,
-            curr_dir: Direction::Right,
+            prev_dir: Direction::None,
+            curr_dir: Direction::None,
         }
     }
 
@@ -47,12 +47,12 @@ impl Snake {
     }
 
     pub fn update(&mut self, ctx: &mut Context) -> GameResult {
-        println!("Current Direction: {:?}", self.curr_dir);
+        // println!("Current Direction: {:?}", self.curr_dir);
         match self.curr_dir {
-            Direction::Up => self.head.y += 32,
-            Direction::Down => self.head.y -= 32,
-            Direction::Right => self.head.x += 32,
-            Direction::Left => self.head.x -= 32,
+            Direction::Up => self.head.y -= 4,
+            Direction::Down => self.head.y += 4,
+            Direction::Left => self.head.x -= 4,
+            Direction::Right => self.head.x += 4,
             _ => ()
         }
 

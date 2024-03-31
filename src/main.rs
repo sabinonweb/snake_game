@@ -26,7 +26,7 @@ pub struct GameState {
 }
 
 impl GameState {
-    fn new(ctx: &mut Context) -> GameState {
+    fn new() -> GameState {
         let food_pos = random().into();
 
         GameState {
@@ -74,39 +74,55 @@ impl EventHandler for GameState {
             }
             KeyCode::W => {
                let dir = Direction::from_keyword(KeyCode::W);
-                println!("W pressed");
-                if self.snake.curr_dir != dir.inverse() && self.snake.prev_dir != self.snake.curr_dir {
-                    self.snake.curr_dir = Direction::Up;
-                    println!("self.current_dir: {:?}", self.snake.curr_dir);
-                }
-                self.snake.curr_dir = Direction::Down;
-            }
-            KeyCode::A => {
-                let dir = Direction::from_keyword(KeyCode::A);
-                println!("A pressed");
-                if self.snake.curr_dir != dir.inverse() && self.snake.prev_dir != self.snake.curr_dir {
-                    self.snake.curr_dir = Direction::Left;
-                    println!("self.current_dir: {:?}", self.snake.curr_dir);
-                }
-                self.snake.curr_dir = Direction::Right;
-            }
-            KeyCode::S => {
-                let dir = Direction::from_keyword(KeyCode::S);
-                println!("S pressed");
-                if self.snake.curr_dir != dir.inverse() && self.snake.prev_dir != self.snake.curr_dir {
-                    self.snake.curr_dir = Direction::Down;
-                    println!("self.current_dir: {:?}", self.snake.curr_dir);
+                println!("W pressed\n\n");
+                println!("dir.inver() {:?}\n\n", &dir.inverse());                
+                println!("prev_dir: {:?}\n\n", self.snake.prev_dir);
+                println!("curr_dir: {:?}\n\n", self.snake.curr_dir);
+
+                if self.snake.prev_dir != dir.inverse() && self.snake.prev_dir != self.snake.curr_dir {
+                    self.snake.prev_dir = self.snake.curr_dir;
+                    println!("self.current_dir: {:?}\n\n", self.snake.curr_dir);
                 }
                 self.snake.curr_dir = Direction::Up;
             }
-            KeyCode::D => {
-                let dir = Direction::from_keyword(KeyCode::D);
-                println!("D pressed");
-                if self.snake.curr_dir != dir.inverse() && self.snake.prev_dir != self.snake.curr_dir {
-                    self.snake.curr_dir = Direction::Right;
-                    println!("self.current_dir: {:?}", self.snake.curr_dir);
+            KeyCode::A => {
+                let dir = Direction::from_keyword(KeyCode::A);
+                println!("A pressed\n\n");
+                println!("dir.inver() {:?}\n\n", &dir.inverse());
+                println!("prev_dir: {:?}\n\n", self.snake.prev_dir);
+                println!("curr_dir: {:?}\n\n", self.snake.curr_dir);
+
+                if self.snake.prev_dir != dir.inverse() && self.snake.prev_dir != self.snake.curr_dir {
+                    self.snake.prev_dir = self.snake.curr_dir;
+                    println!("self.current_dir: {:?}\n\n", self.snake.curr_dir);
                 }
                 self.snake.curr_dir = Direction::Left;
+            }
+            KeyCode::S => {
+                let dir = Direction::from_keyword(KeyCode::S);
+                println!("S pressed\n\n");
+                println!("dir.inver() {:?}\n\n",& dir.inverse());
+                println!("prev_dir: {:?}\n\n", self.snake.prev_dir);
+                println!("curr_dir: {:?}\n\n", self.snake.curr_dir);
+
+                if self.snake.prev_dir != dir.inverse() && self.snake.prev_dir != self.snake.curr_dir {
+                    self.snake.prev_dir = self.snake.curr_dir;
+                    println!("self.current_dir: {:?}\n\n", self.snake.curr_dir);
+                }
+                self.snake.curr_dir = Direction::Down;
+            }
+            KeyCode::D => {
+                let dir = Direction::from_keyword(KeyCode::D);
+                println!("D pressed\n\n");
+                println!("dir.inver() {:?}\n\n", &dir.inverse());
+                println!("prev_dir: {:?}\n\n", self.snake.prev_dir);
+                println!("curr_dir: {:?}\n\n", self.snake.curr_dir);
+
+                if self.snake.prev_dir != dir.inverse() && self.snake.prev_dir != self.snake.curr_dir {
+                    self.snake.prev_dir = self.snake.curr_dir;
+                    println!("self.current_dir: {:?}\n\n", self.snake.curr_dir);
+                }
+                self.snake.curr_dir = Direction::Right;
             }
             _ => ()
         }
@@ -122,6 +138,6 @@ fn main() -> GameResult {
     .window_mode(conf::WindowMode::default().transparent(true).maximized(false).dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1))
     .build()?;
 
-    let state = GameState::new(&mut ctx);
+    let state = GameState::new();
     event::run(ctx, event_loop, state)
 }

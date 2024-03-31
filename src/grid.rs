@@ -48,7 +48,7 @@ impl From<Grid> for (i32, i32) {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Direction {
     Up,
     Down, 
@@ -58,8 +58,8 @@ pub enum Direction {
 }
 
 impl Direction {
-    pub fn inverse(self) -> Direction {
-        match self {
+    pub fn inverse(&self) -> Direction {
+        match *self {
             Direction::Up => Direction::Down,
             Direction::Down => Direction::Up,
             Direction::Right => Direction::Left,
