@@ -1,10 +1,9 @@
 use crate::{
     data::GRID_DIMENSION,
-    GameState,
 };
 use ggez::{graphics::{Canvas, Color, DrawMode, DrawParam, Mesh, Rect}, input::keyboard::KeyCode, *};
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Grid {
     pub x: i32,
     pub y: i32,

@@ -6,8 +6,6 @@ use crate::{
 };
 use ggez::{graphics::{Canvas, Color, DrawMode, DrawParam, Mesh, Rect}, *};
 
-pub enum Ate {}
-
 pub struct Food {
     pub color: Color,
     pub position: Grid,
