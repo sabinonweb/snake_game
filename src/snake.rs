@@ -2,8 +2,7 @@ use crate::{
     data::{GRID_DIMENSION, SCREEN_SIZE}, food::Food, grid::{Direction, Grid}
 };
 use ggez::{
-    *,
-    graphics::Canvas, 
+    graphics::Canvas, winit::dpi::Position, * 
 };
 use std::collections::{HashSet, VecDeque};
 
@@ -12,7 +11,7 @@ pub enum Ate {
     Food,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Segment {
     position: Grid,
 }
@@ -61,11 +60,11 @@ impl Snake {
         let color_head = [0.0, 0.0, 0.0, 1.0].into();
         let color_body = [0.22, 0.29, 0.76, 1.0].into(); 
 
-        self.head.position.draw_rect(ctx, canvas, color_body);
+        self.head.position.draw_rect(ctx, canvas, color_head);
 
         for segment in &self.body {
             println!("draw");
-            segment.position.draw_rect(ctx, canvas, color_head);
+            segment.position.draw_rect(ctx, canvas, color_body);
         }   
 
         Ok(())
@@ -112,35 +111,16 @@ impl Snake {
                 // self.head.position = curr_head_pos.into();
                 println!("curr_head_pos after: {:?}\n", curr_head_pos);
                 self.head.position.x += GRID_DIMENSION.0 as i32;
-                println!("head_pos: {:?}\n", self.head.position);
+            //   println!("head_pos: {:?}\n", self.head.position);
                 // println!("head: {:?}", self.head.position.current_position());
             },
         _ => ()
         }
 
-        for segment in &mut self.body {
-            // match self.curr_dir {
-            //     Direction::Up => {
-            //         segment.position.y -= 32;
-            //         // println!("body: {:?}", segment.position.current_position());
-            //     },
-            //     Direction::Down => {
-            //         segment.position.y += 32;
-            //         // println!("body: {:?}", segment.position.current_position());
-            //     },
-            //     Direction::Left => {
-            //         segment.position.x -= 32;
-            //         // println!("body: {:?}", segment.position.current_position());
-            //     },
-            //     Direction::Right => {
-            //         segment.position.x += 32;
-            //         // println!("body: {:?}", segment.position.current_position());
-            //     },
-            //     _ => ()
-            // }
-            println!("\n\nseg:{:?}\n\n", segment);
-            segment.position = curr_body_pos.into();
+        for i in (1..self.body.len()) {
+           self.body[i].position = self.body[i - 1].position; 
         }
+        self.body[0].position = curr_body_pos.into();
 
         if self.ate_food(food) {
             self.ate = Some(Ate::Food);
