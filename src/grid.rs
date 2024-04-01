@@ -33,6 +33,10 @@ impl Grid {
 
         Ok(())
     }
+
+    pub fn current_position(&self) -> (i32, i32) {
+        (self.x, self.y)
+    }
 }
 
 impl From<(i32, i32)> for Grid {

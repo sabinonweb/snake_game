@@ -2,7 +2,7 @@ use crate::{
     background::Background,
     data::{SCREEN_SIZE, SNAKE_POS},
     food::Food,
-    grid::{Direction, Grid},
+    grid::Direction,
     random::random,
     snake::Snake,
 };
@@ -32,7 +32,7 @@ impl GameState {
 
         GameState {
             food: Food::new(Color::RED, food_pos),
-            snake: Snake::new(SNAKE_POS.into()),
+            snake: Snake::new((0, 0).into()),
         }
     }
 }
@@ -76,7 +76,7 @@ impl EventHandler for GameState {
 
             KeyCode::W => {
                 let direction = Direction::from_keyword(KeyCode::W);
-                println!("\n\nW pressed\n\n");
+                println!("\nW pressed\n");
                 if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction && self.snake.is_snake_within_screen() {
                     self.snake.curr_dir = Direction::Up; 
                 }
@@ -85,7 +85,7 @@ impl EventHandler for GameState {
 
             KeyCode::A => {
                 let direction = Direction::from_keyword(KeyCode::A);
-                println!("\n\nA pressed\n\n");
+                println!("\nA pressed\n");
                 if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction && self.snake.is_snake_within_screen() {
                     self.snake.curr_dir = Direction::Left
                 }
@@ -94,7 +94,7 @@ impl EventHandler for GameState {
 
             KeyCode::S => {
                 let direction = Direction::from_keyword(KeyCode::S);
-                println!("\n\nS pressed\n\n");
+                println!("\nS pressed\n");
                 if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction && self.snake.is_snake_within_screen() {
                     self.snake.curr_dir = Direction::Down;
                 }
@@ -103,7 +103,7 @@ impl EventHandler for GameState {
 
             KeyCode::D => {
                 let direction = Direction::from_keyword(KeyCode::D);
-                println!("\n\n pressed\n\n");
+                println!("\n pressed\n");
                 if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction && self.snake.is_snake_within_screen() {
                     self.snake.curr_dir = Direction::Right;
                 }
