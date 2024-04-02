@@ -24,6 +24,7 @@ mod snake;
 pub struct GameState {
     food: Food,
     snake: Snake,
+    game_over: bool,
 }
 
 impl GameState {
@@ -31,6 +32,7 @@ impl GameState {
         GameState {
             food: Food::new(Color::RED),
             snake: Snake::new((0, 0).into()),
+            game_over: false,
         }
     }
 }
@@ -67,7 +69,6 @@ impl EventHandler for GameState {
         match input.keycode.unwrap() {
             KeyCode::Q => {
                 if input.mods.contains(KeyMods::SHIFT) && input.mods.contains(KeyMods::CTRL) {
-                    println!("Ahhh! You killed the snake!");
                     ctx.request_quit();
                 } else if input.mods.contains(KeyMods::SHIFT) || input.mods.contains(KeyMods::CTRL) {
                     println!("Press both CTRL and SHIFT to kill the beast!");
@@ -78,7 +79,6 @@ impl EventHandler for GameState {
 
             KeyCode::W => {
                 let direction = Direction::from_keyword(KeyCode::W);
-                println!("\nW pressed\n");
                 if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction && self.snake.is_snake_within_screen() {
                     self.snake.curr_dir = Direction::Up; 
                 }
@@ -87,7 +87,6 @@ impl EventHandler for GameState {
 
             KeyCode::A => {
                 let direction = Direction::from_keyword(KeyCode::A);
-                println!("\nA pressed\n");
                 if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction && self.snake.is_snake_within_screen() {
                     self.snake.curr_dir = Direction::Left
                 }
@@ -96,7 +95,6 @@ impl EventHandler for GameState {
 
             KeyCode::S => {
                 let direction = Direction::from_keyword(KeyCode::S);
-                println!("\nS pressed\n");
                 if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction && self.snake.is_snake_within_screen() {
                     self.snake.curr_dir = Direction::Down;
                 }
@@ -105,7 +103,6 @@ impl EventHandler for GameState {
 
             KeyCode::D => {
                 let direction = Direction::from_keyword(KeyCode::D);
-                println!("\n pressed\n");
                 if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction && self.snake.is_snake_within_screen() {
                     self.snake.curr_dir = Direction::Right;
                 }

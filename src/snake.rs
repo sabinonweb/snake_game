@@ -45,17 +45,7 @@ impl Snake {
     pub fn new(pos: Grid) -> Snake {
         let mut body: Vec<Segment> = Vec::new();
         body.push(Segment::new(pos.x - (GRID_DIMENSION.0 + 32.0) as i32, pos.y));
-        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 + 64.0) as i32, pos.y));
-        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 + 96.0) as i32, pos.y));
-        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 + 128.0) as i32, pos.y));
-        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 160.0) as i32, pos.y));
-        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 192.0) as i32, pos.y));
-        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 224.0) as i32, pos.y));
-        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 256.0) as i32, pos.y));
-        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 288.0) as i32, pos.y));
-        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 320.0) as i32, pos.y));
 
-        println!("Body: {:?}", body);
         Snake {
             head: Segment::new(pos.x - GRID_DIMENSION.0 as i32, pos.y),
             body,
@@ -72,7 +62,7 @@ impl Snake {
         self.head.position.draw_rect(ctx, canvas, color_head);
 
         for segment in &self.body {
-            // println!("draw");
+            println!("called\n");
             segment.position.draw_rect(ctx, canvas, color_body);
         }   
 
@@ -98,7 +88,6 @@ impl Snake {
                 curr_head_pos.1 += 32;
                 self.head.position.x -= GRID_DIMENSION.0 as i32;
                             },
-
             Direction::Right => {
                 curr_head_pos.1 -= 32;
                 self.head.position.x += GRID_DIMENSION.0 as i32;
@@ -107,16 +96,17 @@ impl Snake {
         }
 
         for i in 1..self.body.len() {
-            println!("len {:?}\n i = {}\n", self.body.len(), i);
-            println!("body: {:?}\n", self.body[i].position);
-            self.body[i].position = self.body[i - 1].position; 
-            println!("[i] = {:?}\n[i-1] = {:?}", self.body[i].position, self.body[i - 1].position);
+            println!("body len: {:?}\n", self.body.len());
+           // self.body[i].position = self.body[i - 1].position; 
         }
         self.body[0].position = curr_body_pos.into(); 
  
        if let Some(item) = self.ate {
             match item {
-                Ate::Food => self.body.push(curr_body_pos.into()),
+                Ate::Food => {
+                    self.body.push(curr_body_pos.into());
+                    // println!("body: {:?}\n\nlen: {:?}\n\n", self.body, self.body.len());
+                },
                 Ate::Itself => ()
             }
         } 
@@ -128,8 +118,6 @@ impl Snake {
         let mut x = HashSet::new();
         let mut y = HashSet::new();
         
-        println!("Screen called!");
-
         for i in 0..SCREEN_SIZE.0 as i32 {
             for j in 0..SCREEN_SIZE.1 as i32 {
                 x.insert(i);

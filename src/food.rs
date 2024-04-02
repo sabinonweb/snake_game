@@ -18,7 +18,6 @@ impl Food {
     }
 
     pub fn draw(&mut self, canvas: &mut Canvas, ctx: &mut Context) -> GameResult {
-        println!("positionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn: {:?}", self.position);
         self.position.draw_rect(ctx, canvas, self.color);
 
         Ok(())

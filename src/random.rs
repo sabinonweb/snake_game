@@ -8,8 +8,6 @@ pub(crate) fn random() -> (i32, i32) {
 
     let mut random = thread_rng();
 
-    println!("{:?}", SCREEN_SIZE);
-
     for i in (0..SCREEN_SIZE.0 as i32 - 32).step_by(32) {
         for j in (0..SCREEN_SIZE.1 as i32 - 32).step_by(32) {
             random_x.insert(i);
@@ -21,8 +19,6 @@ pub(crate) fn random() -> (i32, i32) {
     x.sort();
     let mut y = random_y.iter().collect::<Vec<&i32>>();
     y.sort();
-
-    println!("x: {:?}\ny: {:?}", x, y);
 
     let mut x: Vec<i32> = random_x.clone().into_iter().collect();
     let mut y: Vec<i32> = random_y.clone().into_iter().collect();
