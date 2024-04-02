@@ -53,9 +53,15 @@ impl EventHandler for GameState {
     fn update(&mut self, ctx: &mut Context) -> Result<(), GameError> {
         self.snake.update(&self.food);
 
-        if self.snake.ate_food(&self.food) {
-            self.snake.ate = Some(Ate::Food);
-            self.food.position = Food::food_pos();
+        if let Some(item) = self.snake.snake_ate(&self.food) {
+            match item {
+                Ate::Food => {
+                    let curr_pos = self.snake.head.curr_pos();
+                    self.snake.body.push(*curr_pos);
+                }
+                Ate::Itself => self.game_over = true,
+                _ => ()
+            }
         }
         Ok(())
     }

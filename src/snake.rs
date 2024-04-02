@@ -12,7 +12,7 @@ pub enum Ate {
     Food,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Segment {
     position: Grid,
 }
@@ -22,6 +22,10 @@ impl Segment {
         Segment {
             position: Grid::new(x, y)
         }
+    }
+
+    pub fn curr_pos(&self) -> &Self {
+        self
     }
 }
 
@@ -61,8 +65,8 @@ impl Snake {
 
         self.head.position.draw_rect(ctx, canvas, color_head);
 
+        println!("draw called");
         for segment in &self.body {
-            println!("called\n");
             segment.position.draw_rect(ctx, canvas, color_body);
         }   
 
@@ -95,21 +99,11 @@ impl Snake {
         _ => ()
         }
 
+        println!("body len: {:?}\n", self.body.len());
         for i in 1..self.body.len() {
-            println!("body len: {:?}\n", self.body.len());
-           // self.body[i].position = self.body[i - 1].position; 
+           self.body[i].position = self.body[i - 1].position; 
         }
-        self.body[0].position = curr_body_pos.into(); 
- 
-       if let Some(item) = self.ate {
-            match item {
-                Ate::Food => {
-                    self.body.push(curr_body_pos.into());
-                    // println!("body: {:?}\n\nlen: {:?}\n\n", self.body, self.body.len());
-                },
-                Ate::Itself => ()
-            }
-        } 
+        self.body[0].position = curr_body_pos.into();  
 
     Ok(())
 }
@@ -128,16 +122,18 @@ impl Snake {
         x.contains(&self.head.position.x) && y.contains(&self.head.position.y)
     }
 
-    pub fn ate_food(&self, food: &Food) -> bool {
-        self.head.position == food.position
-    }
-
-    pub fn ate_itself(&self) -> bool {
+    pub fn snake_ate(&self, food: &Food) -> Option<Ate> {
+        if self.head.position == food.position {
+            return Some(Ate::Food);
+        } 
+        
         for seg in &self.body {
-            return self.head.position == seg.position;
-
+            if self.head.position == seg.position {
+                return Some(Ate::Itself);
+            }
         }
-        false
+
+        None
     }
 }
 
