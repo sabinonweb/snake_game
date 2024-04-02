@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use crate::{
     data::{GRID_DIMENSION, GRID_SIZE, SCREEN_SIZE},
-    grid::Grid,
+    grid::Grid, random::random,
 };
 use ggez::{graphics::{Canvas, Color, DrawMode, DrawParam, Mesh, Rect}, *};
 
@@ -12,19 +12,26 @@ pub struct Food {
 }
 
 impl Food {
-    pub fn new(color: Color, food_pos: Grid) -> Food {
-        Food { position: food_pos, color: color }
+    pub fn new(color: Color) -> Food {
+        let position = Food::food_pos();
+        Food { position, color: color }
     }
 
-    pub fn draw(&mut self, canvas: &mut Canvas, ctx: &mut Context) -> GameResult { 
+    pub fn draw(&mut self, canvas: &mut Canvas, ctx: &mut Context) -> GameResult {
+        println!("positionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn: {:?}", self.position);
         self.position.draw_rect(ctx, canvas, self.color);
 
         Ok(())
     }
     
-    pub fn update(&mut self, _ctx: &mut Context) -> Result<(), GameError> {
+    pub fn update(&mut self) -> Result<(), GameError> {
         self.position.x  += 1;
 
         Ok(())
+    }
+
+    pub fn food_pos() -> Grid {
+        let (x, y) = random();
+        Grid::new(x, y)
     }
 }

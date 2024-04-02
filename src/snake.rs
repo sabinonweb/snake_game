@@ -2,10 +2,11 @@ use crate::{
     data::{GRID_DIMENSION, SCREEN_SIZE}, food::Food, grid::{Direction, Grid}
 };
 use ggez::{
-    graphics::Canvas, winit::dpi::Position, * 
+    graphics::Canvas, * 
 };
 use std::collections::{HashSet, VecDeque};
 
+#[derive(Clone, Copy)]
 pub enum Ate {
     Itself,
     Food,
@@ -24,9 +25,17 @@ impl Segment {
     }
 }
 
+impl From<(i32, i32)> for Segment {
+    fn from(value: (i32, i32)) -> Self {
+        Segment {
+            position: Grid::new(value.0, value.1)
+        }
+    }
+}
+
 pub struct Snake {
     pub head: Segment,
-    pub body: VecDeque<Segment>,
+    pub body: Vec<Segment>,
     pub prev_dir: Direction,
     pub curr_dir: Direction,
     pub ate: Option<Ate>
@@ -34,17 +43,17 @@ pub struct Snake {
 
 impl Snake {
     pub fn new(pos: Grid) -> Snake {
-        let mut body: VecDeque<Segment> = VecDeque::new();
-        body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 32.0) as i32, pos.y));
-        body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 64.0) as i32, pos.y));
-        body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 96.0) as i32, pos.y));
-        body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 128.0) as i32, pos.y));
-        body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 160.0) as i32, pos.y));
-        body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 192.0) as i32, pos.y));
-        body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 224.0) as i32, pos.y));
-        body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 256.0) as i32, pos.y));
-        body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 288.0) as i32, pos.y));
-        body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 320.0) as i32, pos.y));
+        let mut body: Vec<Segment> = Vec::new();
+        body.push(Segment::new(pos.x - (GRID_DIMENSION.0 + 32.0) as i32, pos.y));
+        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 + 64.0) as i32, pos.y));
+        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 + 96.0) as i32, pos.y));
+        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 + 128.0) as i32, pos.y));
+        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 160.0) as i32, pos.y));
+        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 192.0) as i32, pos.y));
+        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 224.0) as i32, pos.y));
+        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 256.0) as i32, pos.y));
+        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 288.0) as i32, pos.y));
+        //body.push_back(Segment::new(pos.x - (GRID_DIMENSION.0 - 320.0) as i32, pos.y));
 
         println!("Body: {:?}", body);
         Snake {
@@ -58,12 +67,12 @@ impl Snake {
 
     pub fn draw(&mut self, ctx: &mut Context, canvas: &mut Canvas) -> GameResult {
         let color_head = [0.0, 0.0, 0.0, 1.0].into();
-        let color_body = [0.22, 0.29, 0.76, 1.0].into(); 
+        let color_body = [0.97, 1.0, 0.52, 1.0].into(); 
 
         self.head.position.draw_rect(ctx, canvas, color_head);
 
         for segment in &self.body {
-            println!("draw");
+            // println!("draw");
             segment.position.draw_rect(ctx, canvas, color_body);
         }   
 
@@ -76,59 +85,41 @@ impl Snake {
 
         match self.curr_dir {
             Direction::Up => {
-                println!("curr_head_pos before: {:?}\n", curr_head_pos);
                 curr_head_pos.0 += 32;
-                // self.head.position = curr_head_pos.into();
-                println!("curr_head_pos after: {:?}\n", curr_head_pos);
                 self.head.position.y -= GRID_DIMENSION.1 as i32;
-                println!("head_pos: {:?}\n", self.head.position);
-                // println!("head: {:?}", self.head.position.current_position());
             },
                             
             Direction::Down => {
-                println!("curr_head_pos before: {:?}\n", curr_head_pos);
                 curr_head_pos.0 -= 32;
-                // self.head.position = curr_head_pos.into();
-                println!("curr_head_pos after: {:?}\n", curr_head_pos);
                 self.head.position.y += GRID_DIMENSION.1 as i32;
-                println!("head_pos: {:?}\n", self.head.position);
-                // println!("head: {:?}", self.head.position.current_position());
             },
 
             Direction::Left => {
-                println!("curr_head_pos before: {:?}\n", curr_head_pos);
                 curr_head_pos.1 += 32;
-                // self.head.position = curr_head_pos.into();
-                println!("curr_head_pos after: {:?}\n", curr_head_pos);
                 self.head.position.x -= GRID_DIMENSION.0 as i32;
-                println!("head_pos: {:?}\n", self.head.position);
-                // println!("head: {:?}", self.head.position.current_position());  
-            },
+                            },
 
             Direction::Right => {
-                println!("curr_head_pos before: {:?}\n", curr_head_pos);
                 curr_head_pos.1 -= 32;
-                // self.head.position = curr_head_pos.into();
-                println!("curr_head_pos after: {:?}\n", curr_head_pos);
                 self.head.position.x += GRID_DIMENSION.0 as i32;
-            //   println!("head_pos: {:?}\n", self.head.position);
-                // println!("head: {:?}", self.head.position.current_position());
             },
         _ => ()
         }
 
-        for i in (1..self.body.len()) {
-           self.body[i].position = self.body[i - 1].position; 
+        for i in 1..self.body.len() {
+            println!("len {:?}\n i = {}\n", self.body.len(), i);
+            println!("body: {:?}\n", self.body[i].position);
+            self.body[i].position = self.body[i - 1].position; 
+            println!("[i] = {:?}\n[i-1] = {:?}", self.body[i].position, self.body[i - 1].position);
         }
-        self.body[0].position = curr_body_pos.into();
-
-        if self.ate_food(food) {
-            self.ate = Some(Ate::Food);
-        } else if self.ate_itself() {
-            self.ate = Some(Ate::Itself);
-        } else {
-            self.ate = None;
-        }
+        self.body[0].position = curr_body_pos.into(); 
+ 
+       if let Some(item) = self.ate {
+            match item {
+                Ate::Food => self.body.push(curr_body_pos.into()),
+                Ate::Itself => ()
+            }
+        } 
 
     Ok(())
 }

@@ -12,6 +12,7 @@ use ggez::{
     input::keyboard::{KeyCode, KeyMods, KeyInput},
     *
 };
+use snake::Ate;
 
 mod background;
 mod data;
@@ -27,11 +28,8 @@ pub struct GameState {
 
 impl GameState {
     fn new() -> GameState {
-        let food_pos = random().into();
-        println!("Food position: {:?}\n", food_pos);
-
         GameState {
-            food: Food::new(Color::RED, food_pos),
+            food: Food::new(Color::RED),
             snake: Snake::new((0, 0).into()),
         }
     }
@@ -53,6 +51,10 @@ impl EventHandler for GameState {
     fn update(&mut self, ctx: &mut Context) -> Result<(), GameError> {
         self.snake.update(&self.food);
 
+        if self.snake.ate_food(&self.food) {
+            self.snake.ate = Some(Ate::Food);
+            self.food.position = Food::food_pos();
+        }
         Ok(())
     }
 

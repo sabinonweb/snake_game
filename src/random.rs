@@ -10,8 +10,8 @@ pub(crate) fn random() -> (i32, i32) {
 
     println!("{:?}", SCREEN_SIZE);
 
-    for i in (0..SCREEN_SIZE.0 as i32 + 32).step_by(32) {
-        for j in (0..SCREEN_SIZE.1 as i32 + 32).step_by(32) {
+    for i in (0..SCREEN_SIZE.0 as i32 - 32).step_by(32) {
+        for j in (0..SCREEN_SIZE.1 as i32 - 32).step_by(32) {
             random_x.insert(i);
             random_y.insert(j);
         } 
