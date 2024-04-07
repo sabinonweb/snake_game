@@ -4,7 +4,7 @@ use crate::{
 use ggez::{
     graphics::Canvas, * 
 };
-use std::collections::{HashSet, VecDeque};
+use std::collections::HashSet;
 
 #[derive(Clone, Copy)]
 pub enum Ate {
@@ -14,7 +14,7 @@ pub enum Ate {
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Segment {
-    position: Grid,
+    pub position: Grid,
 }
 
 impl Segment {
@@ -65,7 +65,7 @@ impl Snake {
 
         self.head.position.draw_rect(ctx, canvas, color_head);
 
-        println!("draw called");
+        // println!("draw called");
         for segment in &self.body {
             segment.position.draw_rect(ctx, canvas, color_body);
         }   
@@ -79,27 +79,27 @@ impl Snake {
 
         match self.curr_dir {
             Direction::Up => {
-                curr_head_pos.0 += 32;
+                curr_head_pos.0 += 8;
                 self.head.position.y -= GRID_DIMENSION.1 as i32;
             },
                             
             Direction::Down => {
-                curr_head_pos.0 -= 32;
+                curr_head_pos.0 -= 8;
                 self.head.position.y += GRID_DIMENSION.1 as i32;
             },
 
             Direction::Left => {
-                curr_head_pos.1 += 32;
+                curr_head_pos.1 += 8;
                 self.head.position.x -= GRID_DIMENSION.0 as i32;
                             },
             Direction::Right => {
-                curr_head_pos.1 -= 32;
+                curr_head_pos.1 -= 8;
                 self.head.position.x += GRID_DIMENSION.0 as i32;
             },
         _ => ()
         }
 
-        println!("body len: {:?}\n", self.body.len());
+        // println!("body len: {:?}\n", self.body.len());
         for i in 1..self.body.len() {
            self.body[i].position = self.body[i - 1].position; 
         }
@@ -132,8 +132,35 @@ impl Snake {
                 return Some(Ate::Itself);
             }
         }
+        
+        // println!("Snake head: {:?}\n", self.head);
+        // println!("Snake body: {:?}\n", self.body);
 
         None
+    }
+
+    pub fn body_pos(&self, curr_pos: &mut Segment) -> Segment {
+        match self.curr_dir {
+            Direction::Up => {
+                curr_pos.position.y += 32;
+                *curr_pos
+            },
+                            
+            Direction::Down => {
+                curr_pos.position.y -= 32;
+                *curr_pos
+            },
+
+            Direction::Left => {
+                curr_pos.position.x += 32;
+                *curr_pos
+            },
+            Direction::Right => {
+                curr_pos.position.x -= 32;
+                *curr_pos
+            },
+        _ => *curr_pos
+        }
     }
 }
 

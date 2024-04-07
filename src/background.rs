@@ -3,10 +3,9 @@ use ggez::{
     *,
 };
 use crate::{
-    data::{GRID_DIMENSION, GRID_SIZE, SCREEN_SIZE},
+    data::{GRID_DIMENSION, SCREEN_SIZE},
     grid::Grid,
 };
-use std::collections::HashSet;
 
 pub struct Background;
 
