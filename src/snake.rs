@@ -1,5 +1,5 @@
 use crate::{
-    data::{GRID_DIMENSION, SCREEN_SIZE}, food::Food, grid::{Direction, Grid}
+    circular_queue::Queue, data::{GRID_DIMENSION, SCREEN_SIZE}, food::Food, grid::{Direction, Grid}
 };
 use ggez::{
     graphics::Canvas, * 
@@ -39,7 +39,7 @@ impl From<(i32, i32)> for Segment {
 
 pub struct Snake {
     pub head: Segment,
-    pub body: Vec<Segment>,
+    pub body: Queue,
     pub prev_dir: Direction,
     pub curr_dir: Direction,
     pub ate: Option<Ate>
@@ -47,8 +47,8 @@ pub struct Snake {
 
 impl Snake {
     pub fn new(pos: Grid) -> Snake {
-        let mut body: Vec<Segment> = Vec::new();
-        body.push(Segment::new(pos.x - (GRID_DIMENSION.0 + 32.0) as i32, pos.y));
+        let mut body = Queue::new();
+        body.enqueue(Segment::new(pos.x - (GRID_DIMENSION.0 + 32.0) as i32, pos.y));
 
         Snake {
             head: Segment::new(pos.x - GRID_DIMENSION.0 as i32, pos.y),
@@ -66,7 +66,7 @@ impl Snake {
         self.head.position.draw_rect(ctx, canvas, color_head);
 
         // println!("draw called");
-        for segment in &self.body {
+        for segment in self.body {
             segment.position.draw_rect(ctx, canvas, color_body);
         }   
 

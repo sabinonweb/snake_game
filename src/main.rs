@@ -19,12 +19,18 @@ mod food;
 mod grid;
 mod random;
 mod snake;
+mod circular_queue;
 
 pub struct GameState {
     food: Food,
     snake: Snake,
     game_over: bool,
     score: i32,
+}
+
+pub enum GameMode {
+    Menu,
+    Screen,
 }
 
 impl GameState {
@@ -99,7 +105,7 @@ impl EventHandler for GameState {
                 let direction = Direction::from_keyword(KeyCode::W);
                 if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction && self.snake.is_snake_within_screen() {
                     self.snake.curr_dir = Direction::Up; 
-                }
+                } 
                 self.snake.prev_dir = self.snake.curr_dir;
             }
 
