@@ -1,6 +1,6 @@
 use crate::{
     background::Background,
-    data::{SCREEN_SIZE, SNAKE_POS},
+    data::SCREEN_SIZE,
     food::Food,
     grid::Direction,
     snake::Snake,
@@ -63,16 +63,16 @@ impl EventHandler for GameState {
         if let Some(ate) = self.snake.snake_ate(&self.food) {
             match ate {
                 Ate::Food => {
-                    let len = self.snake.body.len();
-                    println!("Len: {}\n", self.snake.body.len());
-                    let mut curr_pos = *self.snake.body.last().unwrap_or(&self.snake.head);
+                    let len = self.snake.body.queue.len();
+                    println!("Len: {}\n", self.snake.body.queue.len());
+                    let mut curr_pos = *self.snake.body.queue.last().unwrap_or(&self.snake.head);
                     let curr_pos_add = self.snake.body_pos(&mut curr_pos);                   
                     let last_pos = self.snake.body.last().unwrap();
                     println!("last_pos: {:?}", last_pos);
-                    println!("self.body[last]: {:?}", self.snake.body[len - 1]);
+                    println!("self.body[last]: {:?}", self.snake.body.queue[len - 1]);
                     // println!("pos_curr: {:?}\n", curr_pos);
                     println!("curr_pos: {:?}", curr_pos);
-                    self.snake.body.push(curr_pos_add.clone());
+                    self.snake.body.enqueue(curr_pos_add.clone());
                     self.food.position = Food::food_pos();
                     println!("self.head: {:?}", self.snake.head);
                     println!("self.body: {:?}\n", self.snake.body);

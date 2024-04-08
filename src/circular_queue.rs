@@ -1,6 +1,7 @@
 use crate::snake::Segment;
 use ggez::GameResult;
 
+#[derive(Clone, Debug, PartialEq)]
 pub struct Queue {
     pub queue: Vec<Segment>,
     pub front: isize,
@@ -28,7 +29,7 @@ impl Queue {
         let rear = (self.rear + 1) % (self.queue.len() as isize);
 
         if !self.is_full() {
-            self.queue.insert(rear, value);
+            self.queue.insert(rear.try_into().unwrap(), value);
         } else {
             println!("The queue is full");
         }
@@ -37,10 +38,10 @@ impl Queue {
     }
 
     pub fn dequeue(&self) -> GameResult {
-        let front += 1;
+        self.front += 1;
 
         if !self.is_empty() {
-            self.queue.remove(front);
+            self.queue.remove(self.front.try_into().unwrap());
         } else {
             println!("The queue is empty");
         }

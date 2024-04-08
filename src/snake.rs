@@ -100,10 +100,10 @@ impl Snake {
         }
 
         // println!("body len: {:?}\n", self.body.len());
-        for i in 1..self.body.len() {
-           self.body[i].position = self.body[i - 1].position; 
+        for i in 1..self.body.queue.len() {
+           self.body.queue[i].position = self.body.queue[i - 1].position; 
         }
-        self.body[0].position = curr_body_pos.into();  
+        self.body.queue[0].position = curr_body_pos.into();  
 
     Ok(())
 }
@@ -127,7 +127,7 @@ impl Snake {
             return Some(Ate::Food);
         } 
         
-        for seg in &self.body {
+        for seg in &self.body.queue {
             if self.head.position == seg.position {
                 return Some(Ate::Itself);
             }
