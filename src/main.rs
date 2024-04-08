@@ -19,13 +19,13 @@ mod food;
 mod grid;
 mod random;
 mod snake;
-mod circular_queue;
 
 pub struct GameState {
     food: Food,
     snake: Snake,
     game_over: bool,
-    score: i32,
+    score: u32,
+    fps: u32
 }
 
 pub enum GameMode {
@@ -40,6 +40,7 @@ impl GameState {
             snake: Snake::new((0, 0).into()),
             game_over: false,
             score: 0,
+            fps: 8
         }
     }
 }
@@ -58,28 +59,37 @@ impl EventHandler for GameState {
     }
 
     fn update(&mut self, ctx: &mut Context) -> Result<(), GameError> {
-        self.snake.update(&self.food);
+        while ctx.time.check_update_time(self.fps) {
+            self.snake.update(&self.food);
 
-        if let Some(ate) = self.snake.snake_ate(&self.food) {
-            match ate {
-                Ate::Food => {
-                    let len = self.snake.body.queue.len();
-                    println!("Len: {}\n", self.snake.body.queue.len());
-                    let mut curr_pos = *self.snake.body.queue.last().unwrap_or(&self.snake.head);
-                    let curr_pos_add = self.snake.body_pos(&mut curr_pos);                   
-                    let last_pos = self.snake.body.last().unwrap();
-                    println!("last_pos: {:?}", last_pos);
-                    println!("self.body[last]: {:?}", self.snake.body.queue[len - 1]);
-                    // println!("pos_curr: {:?}\n", curr_pos);
-                    println!("curr_pos: {:?}", curr_pos);
-                    self.snake.body.enqueue(curr_pos_add.clone());
-                    self.food.position = Food::food_pos();
-                    println!("self.head: {:?}", self.snake.head);
-                    println!("self.body: {:?}\n", self.snake.body);
-                } 
-                Ate::Itself => self.game_over = true,
-                _ => ()
-            }
+            if let Some(ate) = self.snake.snake_ate(&self.food) {
+                match ate {
+                    Ate::Food => {
+                        let len = self.snake.body.len();
+                        let mut curr_pos = *self.snake.body.last().unwrap_or(&self.snake.head);
+                        let curr_pos_add = self.snake.body_pos(&mut curr_pos);                   
+                        let last_pos = self.snake.body.last().unwrap();
+                        println!("fps: {}", self.fps);
+                        self.score += 1;
+                        let mut fps = Some(self.fps + (self.score * 1 / 5) as u32);
+                        self.fps = match fps {
+                            Some(fps) => {
+                                if fps >= 20 {
+                                    20
+                                } else {
+                                    fps
+                                }
+                            }
+                            None => 8,
+                        }; 
+                        self.snake.body.push(curr_pos_add.clone());
+
+                        self.food.position = Food::food_pos();
+                    } 
+                    Ate::Itself => self.game_over = true,
+                    _ => ()
+                }
+            } 
         }
         Ok(())
     }
@@ -102,32 +112,36 @@ impl EventHandler for GameState {
             }
 
             KeyCode::W => {
+                // println!("W Pressed");
                 let direction = Direction::from_keyword(KeyCode::W);
-                if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction && self.snake.is_snake_within_screen() {
+                if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction {
                     self.snake.curr_dir = Direction::Up; 
                 } 
                 self.snake.prev_dir = self.snake.curr_dir;
             }
 
             KeyCode::A => {
+                // println!("A Pressed");
                 let direction = Direction::from_keyword(KeyCode::A);
-                if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction && self.snake.is_snake_within_screen() {
+                if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction {
                     self.snake.curr_dir = Direction::Left
                 }
                 self.snake.prev_dir = self.snake.curr_dir;
             }
 
             KeyCode::S => {
+                // println!("S Pressed");
                 let direction = Direction::from_keyword(KeyCode::S);
-                if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction && self.snake.is_snake_within_screen() {
+                if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction {
                     self.snake.curr_dir = Direction::Down;
                 }
                 self.snake.prev_dir = self.snake.curr_dir;
             }
 
             KeyCode::D => {
+                // println!("D Pressed");
                 let direction = Direction::from_keyword(KeyCode::D);
-                if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction && self.snake.is_snake_within_screen() {
+                if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction {
                     self.snake.curr_dir = Direction::Right;
                 }
                 self.snake.prev_dir = self.snake.curr_dir;
@@ -146,6 +160,7 @@ fn main() -> GameResult {
     .window_mode(conf::WindowMode::default().transparent(true).maximized(false).dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1))
     .build()?;
 
+    println!("x = {} y = {}", SCREEN_SIZE.0, SCREEN_SIZE.1);
     let state = GameState::new();
     event::run(ctx, event_loop, state)
 }

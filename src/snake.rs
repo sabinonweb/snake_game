@@ -1,5 +1,5 @@
 use crate::{
-    circular_queue::Queue, data::{GRID_DIMENSION, SCREEN_SIZE}, food::Food, grid::{Direction, Grid}
+    data::{GRID_DIMENSION, SCREEN_SIZE}, food::Food, grid::{Direction, Grid}
 };
 use ggez::{
     graphics::Canvas, * 
@@ -39,7 +39,7 @@ impl From<(i32, i32)> for Segment {
 
 pub struct Snake {
     pub head: Segment,
-    pub body: Queue,
+    pub body: Vec<Segment>,
     pub prev_dir: Direction,
     pub curr_dir: Direction,
     pub ate: Option<Ate>
@@ -47,8 +47,8 @@ pub struct Snake {
 
 impl Snake {
     pub fn new(pos: Grid) -> Snake {
-        let mut body = Queue::new();
-        body.enqueue(Segment::new(pos.x - (GRID_DIMENSION.0 + 32.0) as i32, pos.y));
+        let mut body: Vec<Segment> = Vec::new();
+        body.push(Segment::new(pos.x - (GRID_DIMENSION.0 + 32.0) as i32, pos.y));
 
         Snake {
             head: Segment::new(pos.x - GRID_DIMENSION.0 as i32, pos.y),
@@ -66,7 +66,7 @@ impl Snake {
         self.head.position.draw_rect(ctx, canvas, color_head);
 
         // println!("draw called");
-        for segment in self.body {
+        for segment in &self.body {
             segment.position.draw_rect(ctx, canvas, color_body);
         }   
 
@@ -79,31 +79,31 @@ impl Snake {
 
         match self.curr_dir {
             Direction::Up => {
-                curr_head_pos.0 += 8;
+                curr_head_pos.0 += 1;
                 self.head.position.y -= GRID_DIMENSION.1 as i32;
             },
                             
             Direction::Down => {
-                curr_head_pos.0 -= 8;
+                curr_head_pos.0 -= 1;
                 self.head.position.y += GRID_DIMENSION.1 as i32;
             },
 
             Direction::Left => {
-                curr_head_pos.1 += 8;
+                curr_head_pos.1 += 1;
                 self.head.position.x -= GRID_DIMENSION.0 as i32;
                             },
             Direction::Right => {
-                curr_head_pos.1 -= 8;
+                curr_head_pos.1 -= 1;
                 self.head.position.x += GRID_DIMENSION.0 as i32;
             },
         _ => ()
         }
 
         // println!("body len: {:?}\n", self.body.len());
-        for i in 1..self.body.queue.len() {
-           self.body.queue[i].position = self.body.queue[i - 1].position; 
+        for i in 1..self.body.len() {
+           self.body[i].position = self.body[i - 1].position; 
         }
-        self.body.queue[0].position = curr_body_pos.into();  
+        self.body[0].position = curr_body_pos.into();  
 
     Ok(())
 }
@@ -124,17 +124,16 @@ impl Snake {
 
     pub fn snake_ate(&self, food: &Food) -> Option<Ate> {
         if self.head.position == food.position {
+            println!("ate");
             return Some(Ate::Food);
         } 
         
-        for seg in &self.body.queue {
+        for seg in &self.body {
+            //println!("drawing");
             if self.head.position == seg.position {
                 return Some(Ate::Itself);
             }
         }
-        
-        // println!("Snake head: {:?}\n", self.head);
-        // println!("Snake body: {:?}\n", self.body);
 
         None
     }
