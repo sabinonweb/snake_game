@@ -65,24 +65,20 @@ impl EventHandler for GameState {
             if let Some(ate) = self.snake.snake_ate(&self.food) {
                 match ate {
                     Ate::Food => {
-                        let len = self.snake.body.len();
-                        let mut curr_pos = *self.snake.body.last().unwrap_or(&self.snake.head);
-                        let curr_pos_add = self.snake.body_pos(&mut curr_pos);                   
-                        let last_pos = self.snake.body.last().unwrap();
-                        println!("fps: {}", self.fps);
+                        let curr_pos = self.snake.body.last().unwrap();                   
                         self.score += 1;
                         let mut fps = Some(self.fps + (self.score * 1 / 5) as u32);
                         self.fps = match fps {
                             Some(fps) => {
-                                if fps >= 20 {
-                                    20
+                                if fps >= 15 {
+                                    15
                                 } else {
                                     fps
                                 }
                             }
                             None => 8,
                         }; 
-                        self.snake.body.push(curr_pos_add.clone());
+                        self.snake.body.push(curr_pos.clone());
 
                         self.food.position = Food::food_pos();
                     } 

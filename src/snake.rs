@@ -23,10 +23,6 @@ impl Segment {
             position: Grid::new(x, y)
         }
     }
-
-    pub fn curr_pos(&self) -> &Self {
-        self
-    }
 }
 
 impl From<(i32, i32)> for Segment {
@@ -65,7 +61,6 @@ impl Snake {
 
         self.head.position.draw_rect(ctx, canvas, color_head);
 
-        // println!("draw called");
         for segment in &self.body {
             segment.position.draw_rect(ctx, canvas, color_body);
         }   
@@ -75,7 +70,7 @@ impl Snake {
 
     pub fn update(&mut self, food: &Food) -> GameResult {
         let mut curr_head_pos = self.head.position.current_position().clone();
-        let mut curr_body_pos = self.head.position.current_position().clone();
+        let mut curr_body_pos = self.head.position.current_position().clone(); 
 
         match self.curr_dir {
             Direction::Up => {
@@ -98,12 +93,10 @@ impl Snake {
             },
         _ => ()
         }
-
-        // println!("body len: {:?}\n", self.body.len());
-        for i in 1..self.body.len() {
-           self.body[i].position = self.body[i - 1].position; 
+        
+        for segment in &mut self.body {
+            segment.position = curr_body_pos.into();
         }
-        self.body[0].position = curr_body_pos.into();  
 
     Ok(())
 }
@@ -129,7 +122,6 @@ impl Snake {
         } 
         
         for seg in &self.body {
-            //println!("drawing");
             if self.head.position == seg.position {
                 return Some(Ate::Itself);
             }

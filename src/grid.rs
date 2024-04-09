@@ -42,6 +42,11 @@ impl Grid {
     pub fn current_position(&self) -> (i32, i32) {
         (self.x, self.y)
     }
+
+    pub fn modify(&mut self, x: i32, y: i32) {
+        self.x = x;
+        self.y = y;
+    }
 }
 
 impl From<(i32, i32)> for Grid {
