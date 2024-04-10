@@ -60,12 +60,15 @@ impl EventHandler for GameState {
 
     fn update(&mut self, ctx: &mut Context) -> Result<(), GameError> {
         while ctx.time.check_update_time(self.fps) && !self.game_over {
-            self.snake.update()?;
+            self.snake.update(&self.food)?;
+
+            if self.food.position == self.snake.head.position {
+                println!("food_pos: {:?}", self.food.position);
+            }
 
             if let Some(ate) = self.snake.snake_ate(&self.food) {
                 match ate {
                     Ate::Food => {
-                        println!("ate");
                         let curr_pos = self.snake.body.last().unwrap();                   
                         self.score += 1;
                         let fps = Some(self.fps + (self.score * 1 / 5) as u32);

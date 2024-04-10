@@ -14,21 +14,21 @@ impl Grid {
         }
     }
 
-    pub fn draw_rect(&self, ctx: &mut Context, canvas: &mut Canvas, color: Color) -> GameResult {
-            let rect = Mesh::new_rectangle(
-            ctx,
-            DrawMode::fill(),
-            Rect {
-                x: (self.x  % SCREEN_SIZE.0 as i32) as f32,
-                y: (self.y % SCREEN_SIZE.1 as i32) as f32,
-                w: GRID_DIMENSION.0,
-                h: GRID_DIMENSION.1,
-                },
-                color,
-            )?;
+    pub fn draw_rect(&self, ctx: &mut Context, canvas: &mut Canvas, color: Color) -> GameResult { 
+        let rect = Mesh::new_rectangle(
+        ctx,
+        DrawMode::fill(),
+        Rect {
+            x: (self.x  % SCREEN_SIZE.0 as i32) as f32,
+            y: (self.y % SCREEN_SIZE.1 as i32) as f32,
+            w: GRID_DIMENSION.0,
+            h: GRID_DIMENSION.1,
+            },
+            color,
+        )?;
 
-            canvas.draw(&rect, DrawParam::default());        
-        
+        canvas.draw(&rect, DrawParam::default());         
+
         Ok(())
     }
 

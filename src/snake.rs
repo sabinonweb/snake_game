@@ -1,5 +1,5 @@
 use crate::{
-    data::GRID_DIMENSION, food::Food, grid::{Direction, Grid}
+    data::{GRID_DIMENSION, SCREEN_SIZE}, food::Food, grid::{Direction, Grid}
 };
 use ggez::{
     graphics::Canvas, * 
@@ -67,7 +67,7 @@ impl Snake {
         Ok(())
     }
 
-    pub fn update(&mut self) -> GameResult {
+    pub fn update(&mut self, food: &Food) -> GameResult {
         let mut curr_head_pos = self.head.position.current_position().clone();
 
         match self.curr_dir {
@@ -86,7 +86,7 @@ impl Snake {
                 self.head.position.x += GRID_DIMENSION.0 as i32;
             },
         _ => ()
-        }
+        } 
         
         // replaces the curr_segment's position with prev segment's position
         for segment in &mut self.body {
@@ -99,7 +99,7 @@ impl Snake {
 }
 
     pub fn snake_ate(&self, food: &Food) -> Option<Ate> {
-        if self.head.position == food.position {
+        if <(i32, i32) as Into<Grid>>::into((self.head.position.x % SCREEN_SIZE.0 as i32, self.head.position.y % SCREEN_SIZE.1 as i32)) == food.position {
             return Some(Ate::Food);
         } 
         
