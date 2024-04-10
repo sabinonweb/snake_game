@@ -15,8 +15,6 @@ impl Grid {
     }
 
     pub fn draw_rect(&self, ctx: &mut Context, canvas: &mut Canvas, color: Color) -> GameResult {
-        // if self.x >=0 && self.x <= 960 && self.y >= 0 && self.y <= 640 {
-        // println!("self.x {:?}\nself.y {}\n", self.x, self.y);
             let rect = Mesh::new_rectangle(
             ctx,
             DrawMode::fill(),
@@ -28,13 +26,8 @@ impl Grid {
                 },
                 color,
             )?;
-            // println!("ok");
 
-            canvas.draw(&rect, DrawParam::default());
-
-        // } 
-        // println!("stopppp");
-        
+            canvas.draw(&rect, DrawParam::default());        
         
         Ok(())
     }

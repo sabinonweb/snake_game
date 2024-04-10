@@ -49,9 +49,9 @@ impl EventHandler for GameState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
 
-        Background::draw(&mut canvas, ctx);
-        self.food.draw(&mut canvas, ctx);
-        self.snake.draw(ctx, &mut canvas);
+        Background::draw(&mut canvas, ctx)?;
+        self.food.draw(&mut canvas, ctx)?;
+        self.snake.draw(ctx, &mut canvas)?;
 
         canvas.finish(ctx)?;
 
@@ -59,15 +59,16 @@ impl EventHandler for GameState {
     }
 
     fn update(&mut self, ctx: &mut Context) -> Result<(), GameError> {
-        while ctx.time.check_update_time(self.fps) {
-            self.snake.update(&self.food);
+        while ctx.time.check_update_time(self.fps) && !self.game_over {
+            self.snake.update()?;
 
             if let Some(ate) = self.snake.snake_ate(&self.food) {
                 match ate {
                     Ate::Food => {
+                        println!("ate");
                         let curr_pos = self.snake.body.last().unwrap();                   
                         self.score += 1;
-                        let mut fps = Some(self.fps + (self.score * 1 / 5) as u32);
+                        let fps = Some(self.fps + (self.score * 1 / 5) as u32);
                         self.fps = match fps {
                             Some(fps) => {
                                 if fps >= 15 {
@@ -83,7 +84,6 @@ impl EventHandler for GameState {
                         self.food.position = Food::food_pos();
                     } 
                     Ate::Itself => self.game_over = true,
-                    _ => ()
                 }
             } 
         }
@@ -107,8 +107,7 @@ impl EventHandler for GameState {
                 } 
             }
 
-            KeyCode::W => {
-                // println!("W Pressed");
+            KeyCode::W => {  
                 let direction = Direction::from_keyword(KeyCode::W);
                 if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction {
                     self.snake.curr_dir = Direction::Up; 
@@ -117,7 +116,6 @@ impl EventHandler for GameState {
             }
 
             KeyCode::A => {
-                // println!("A Pressed");
                 let direction = Direction::from_keyword(KeyCode::A);
                 if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction {
                     self.snake.curr_dir = Direction::Left
@@ -126,7 +124,6 @@ impl EventHandler for GameState {
             }
 
             KeyCode::S => {
-                // println!("S Pressed");
                 let direction = Direction::from_keyword(KeyCode::S);
                 if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction {
                     self.snake.curr_dir = Direction::Down;
@@ -135,7 +132,6 @@ impl EventHandler for GameState {
             }
 
             KeyCode::D => {
-                // println!("D Pressed");
                 let direction = Direction::from_keyword(KeyCode::D);
                 if self.snake.prev_dir != direction.inverse() && self.snake.curr_dir != direction {
                     self.snake.curr_dir = Direction::Right;
@@ -149,7 +145,7 @@ impl EventHandler for GameState {
 }
 
 fn main() -> GameResult {
-    let (mut ctx, event_loop) = ContextBuilder::new(
+    let (ctx, event_loop) = ContextBuilder::new(
         "snake_game", "sabinonweb"
     )
     .window_setup(conf::WindowSetup::default().title("snake_game"))
