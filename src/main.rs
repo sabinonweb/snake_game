@@ -17,6 +17,7 @@ mod background;
 mod data;
 mod food;
 mod grid;
+mod menu;
 mod random;
 mod snake;
 
@@ -25,7 +26,8 @@ pub struct GameState {
     snake: Snake,
     game_over: bool,
     score: u32,
-    fps: u32
+    fps: u32,
+    game_mode: GameMode,
 }
 
 pub enum GameMode {
@@ -40,21 +42,28 @@ impl GameState {
             snake: Snake::new((0, 0).into()),
             game_over: false,
             score: 0,
-            fps: 8
+            fps: 8,
+            game_mode: GameMode::Menu,
         }
     }
 }
 
 impl EventHandler for GameState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
+        match self.game_mode {
+            GameMode::Screen => {
+                let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
 
-        Background::draw(&mut canvas, ctx)?;
-        self.food.draw(&mut canvas, ctx)?;
-        self.snake.draw(ctx, &mut canvas)?;
-
-        canvas.finish(ctx)?;
-
+                Background::draw(&mut canvas, ctx)?;
+                self.food.draw(&mut canvas, ctx)?;
+                self.snake.draw(ctx, &mut canvas)?;
+                canvas.finish(ctx)?;
+            }
+            GameMode::Menu => {
+                println!("welcome");
+            }
+        }
+        
         Ok(())
     }
 
@@ -89,7 +98,12 @@ impl EventHandler for GameState {
                     Ate::Itself => self.game_over = true,
                 }
             } 
+        } 
+
+        if self.game_over {
+            self.game_mode = GameMode::Menu;
         }
+
         Ok(())
     }
 
@@ -108,6 +122,10 @@ impl EventHandler for GameState {
                 } else {
                     println!("Ayee Dinesh! Atleast try a little!");
                 } 
+            }
+
+            KeyCode::Space => {
+               self.game_mode = GameMode::Screen;
             }
 
             KeyCode::W => {  
