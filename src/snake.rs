@@ -67,7 +67,7 @@ impl Snake {
         Ok(())
     }
 
-    pub fn update(&mut self, food: &Food) -> GameResult {
+    pub fn update(&mut self) -> GameResult {
         let mut curr_head_pos = self.head.position.current_position().clone();
 
         match self.curr_dir {

@@ -1,6 +1,5 @@
 use crate::data::SCREEN_SIZE;
 use rand::{seq::IteratorRandom, thread_rng};
-use std::collections::HashSet;
 
 pub(crate) fn random() -> (i32, i32) {
     let mut random_x: Vec<i32> = Vec::new();

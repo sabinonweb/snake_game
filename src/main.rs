@@ -2,8 +2,9 @@ use crate::{
     background::Background,
     data::SCREEN_SIZE,
     food::Food,
+    menu::Menu,
     grid::Direction,
-    snake::Snake,
+    snake::{Ate, Snake},
 };
 use ggez::{
     event::EventHandler,  
@@ -11,7 +12,6 @@ use ggez::{
     input::keyboard::{KeyCode, KeyMods, KeyInput},
     *
 };
-use snake::Ate;
 
 mod background;
 mod data;
@@ -30,6 +30,7 @@ pub struct GameState {
     game_mode: GameMode,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum GameMode {
     Menu,
     Screen,
@@ -50,30 +51,27 @@ impl GameState {
 
 impl EventHandler for GameState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        match self.game_mode {
-            GameMode::Screen => {
-                let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
+        let mut canvas = Canvas::from_frame(ctx, Color::WHITE);
+        Background::draw(&mut canvas, ctx, &self.game_mode)?;
 
-                Background::draw(&mut canvas, ctx)?;
-                self.food.draw(&mut canvas, ctx)?;
-                self.snake.draw(ctx, &mut canvas)?;
-                canvas.finish(ctx)?;
-            }
+        match self.game_mode {
             GameMode::Menu => {
-                println!("welcome");
+                Menu::draw(&mut canvas, ctx)?; 
             }
+
+            GameMode::Screen => { 
+                self.food.draw(&mut canvas, ctx)?;
+                self.snake.draw(ctx, &mut canvas)?; 
+            } 
         }
+        canvas.finish(ctx)?;
         
         Ok(())
     }
 
     fn update(&mut self, ctx: &mut Context) -> Result<(), GameError> {
-        while ctx.time.check_update_time(self.fps) && !self.game_over {
-            self.snake.update(&self.food)?;
-
-            if self.food.position == self.snake.head.position {
-                println!("food_pos: {:?}", self.food.position);
-            }
+        while ctx.time.check_update_time(self.fps) && !self.game_over && self.game_mode == GameMode::Screen {
+            self.snake.update()?;
 
             if let Some(ate) = self.snake.snake_ate(&self.food) {
                 match ate {

@@ -10,21 +10,22 @@ pub struct Menu {
 }
 
 impl Menu {
-    pub fn draw(&mut self, canvas: &mut Canvas, ctx: &mut Context) -> GameResult {
-        let color = [0.95, 0.56, 0.53, 1.0].into();
+    pub fn draw(canvas: &mut Canvas, ctx: &mut Context) -> GameResult {
+        let color = [0.24, 0.45, 0.25, 1.0].into();
         let rect = Mesh::new_rectangle(
             ctx,
             DrawMode::fill(),
             Rect{
-                x: SCREEN_SIZE.0 / 2.0,
-                y: SCREEN_SIZE.1 / 2.0,
+                x: SCREEN_SIZE.0 / 3.0,
+                y: SCREEN_SIZE.1 / 8.0,
                 w: GRID_SIZE.0 * 10.0,
                 h: GRID_SIZE.1 * 3.0,
             },
            color, 
-        );
+        )?;
 
-        canvas.draw(rect, DrawParam::default());
+        canvas.draw(&rect, DrawParam::default());
+
         Ok(())
     }   
 }
