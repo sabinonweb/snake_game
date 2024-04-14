@@ -28,6 +28,7 @@ pub struct GameState {
     score: u32,
     fps: u32,
     game_mode: GameMode,
+    menu: Menu,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -39,12 +40,13 @@ pub enum GameMode {
 impl GameState {
     fn new() -> GameState {
         GameState {
-            food: Food::new(Color::RED),
+            food: Food::new([0.98, 0.98, 0.85, 1.0].into()),
             snake: Snake::new((0, 0).into()),
             game_over: false,
             score: 0,
             fps: 8,
             game_mode: GameMode::Menu,
+            menu: Menu::new(),
         }
     }
 }
@@ -56,7 +58,7 @@ impl EventHandler for GameState {
 
         match self.game_mode {
             GameMode::Menu => {
-                Menu::draw(&mut canvas, ctx)?; 
+                self.menu.draw(&mut canvas, ctx)?; 
             }
 
             GameMode::Screen => { 
@@ -102,6 +104,24 @@ impl EventHandler for GameState {
             self.game_mode = GameMode::Menu;
         }
 
+        Ok(())
+    }
+
+    fn mouse_button_down_event(
+            &mut self,
+            _ctx: &mut Context,
+            _button: event::MouseButton,
+            x: f32,
+            y: f32,
+        ) -> Result<(), GameError> {
+        if self.game_mode == GameMode::Menu {
+            let x_coord = self.menu.x_coord();
+            let y_coord = self.menu.y_coord();
+
+            if x < x_coord.1 && x > x_coord.0 && y < y_coord.1 && y > y_coord.0 {
+                self.game_mode = GameMode::Screen;
+            }
+        }
         Ok(())
     }
 
@@ -169,6 +189,7 @@ fn main() -> GameResult {
     )
     .window_setup(conf::WindowSetup::default().title("snake_game"))
     .window_mode(conf::WindowMode::default().transparent(true).maximized(false).dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1))
+        .add_resource_path("../resources")
     .build()?;
 
     println!("x = {} y = {}", SCREEN_SIZE.0, SCREEN_SIZE.1);
