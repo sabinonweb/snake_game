@@ -4,6 +4,7 @@ use crate::{
     food::Food,
     menu::Menu,
     grid::Direction,
+    score::Score,
     snake::{Ate, Snake},
 };
 use ggez::{
@@ -19,13 +20,14 @@ mod food;
 mod grid;
 mod menu;
 mod random;
+mod score;
 mod snake;
 
 pub struct GameState {
     food: Food,
     snake: Snake,
     game_over: bool,
-    score: u32,
+    game_points: Score,
     fps: u32,
     game_mode: GameMode,
     menu: Menu,
@@ -34,6 +36,7 @@ pub struct GameState {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum GameMode {
     Menu,
+    Score,
     Screen,
 }
 
@@ -43,7 +46,7 @@ impl GameState {
             food: Food::new([0.95, 0.25, 0.3, 1.0].into()),
             snake: Snake::new((0, 0).into()),
             game_over: false,
-            score: 0,
+            game_points: Score::new(),
             fps: 8,
             game_mode: GameMode::Menu,
             menu: Menu::new(),
@@ -64,7 +67,11 @@ impl EventHandler for GameState {
             GameMode::Screen => { 
                 self.food.draw(&mut canvas, ctx)?;
                 self.snake.draw(ctx, &mut canvas)?; 
-            } 
+            }
+
+            GameMode::Score => {
+                self.game_points.draw(&mut canvas, ctx)?;
+            }
         }
         canvas.finish(ctx)?;
         
@@ -79,8 +86,8 @@ impl EventHandler for GameState {
                 match ate {
                     Ate::Food => {
                         let curr_pos = self.snake.body.last().unwrap();                   
-                        self.score += 1;
-                        let fps = Some(self.fps + (self.score * 1 / 5) as u32);
+                        self.game_points.score += 1;
+                        let fps = Some(self.fps + (self.game_points.score * 1 / 5) as u32);
                         self.fps = match fps {
                             Some(fps) => {
                                 if fps >= 15 {
@@ -101,7 +108,7 @@ impl EventHandler for GameState {
         } 
 
         if self.game_over {
-            self.game_mode = GameMode::Menu;
+            self.game_mode = GameMode::Score;
         }
 
         Ok(())
@@ -144,6 +151,11 @@ impl EventHandler for GameState {
 
             KeyCode::Space => {
                self.game_mode = GameMode::Screen;
+            }
+
+
+            KeyCode::L => {
+                self.game_mode = GameMode::Score;
             }
 
             KeyCode::W => {  

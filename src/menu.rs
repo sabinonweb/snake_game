@@ -84,4 +84,3 @@ impl Menu {
         (self.y, self.y + self.h)
     }
 }
-

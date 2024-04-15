@@ -32,6 +32,36 @@ impl Grid {
         Ok(())
     }
 
+        pub fn draw_snake(&self, ctx: &mut Context, canvas: &mut Canvas, color: Color) -> GameResult { 
+        let rect = Mesh::new_rectangle(
+        ctx,
+        DrawMode::fill(),
+        Rect {
+            x: if (self.x, self.y) == (0, 0) { 
+                    0 as f32
+                } else if self.x == 0 || self.y == 0 {
+                    SCREEN_SIZE.0
+                } else {
+                    (self.x  % SCREEN_SIZE.0 as i32) as f32
+                },
+            y: if (self.x, self.y) == (0, 0) { 
+                    0 as f32
+                } else if self.x == 0 || self.y == 0 {
+                    SCREEN_SIZE.0
+                } else {
+                    (self.y % SCREEN_SIZE.0 as i32) as f32
+                },
+            w: GRID_DIMENSION.0,
+            h: GRID_DIMENSION.1,
+            },
+            color,
+        )?;
+
+        canvas.draw(&rect, DrawParam::default());         
+
+        Ok(())
+    }
+
     pub fn current_position(&self) -> (i32, i32) {
         (self.x, self.y)
     }
