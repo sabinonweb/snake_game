@@ -40,7 +40,7 @@ pub enum GameMode {
 impl GameState {
     fn new() -> GameState {
         GameState {
-            food: Food::new([0.98, 0.98, 0.85, 1.0].into()),
+            food: Food::new([0.95, 0.25, 0.3, 1.0].into()),
             snake: Snake::new((0, 0).into()),
             game_over: false,
             score: 0,
@@ -136,7 +136,7 @@ impl EventHandler for GameState {
                 if input.mods.contains(KeyMods::SHIFT) && input.mods.contains(KeyMods::CTRL) {
                     ctx.request_quit();
                 } else if input.mods.contains(KeyMods::SHIFT) || input.mods.contains(KeyMods::CTRL) {
-                    println!("Press both CTRL and SHIFT to kill the beast!");
+                    self.game_mode = GameMode::Menu;
                 } else {
                     println!("Ayee Dinesh! Atleast try a little!");
                 } 

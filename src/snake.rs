@@ -56,7 +56,7 @@ impl Snake {
 
     pub fn draw(&mut self, ctx: &mut Context, canvas: &mut Canvas) -> GameResult {
         let color_head = [0.0, 0.0, 0.0, 1.0].into();
-        let color_body = [0.68, 0.74, 0.62, 1.0].into(); 
+        let color_body = [0.95, 0.95, 0.25, 1.0].into(); 
 
         self.head.position.draw_rect(ctx, canvas, color_head)?;
 
