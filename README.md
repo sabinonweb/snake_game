@@ -6,8 +6,7 @@ It is a simple snake_game made using ggez.rs. The project is a part of my explor
 
 ## Demo
 
-Insert gif or link to demo
-
+![snake](https://github.com/sabinonweb/snake_game/assets/123313687/5a58ca22-feec-4f6a-b8fc-ef22263ad9fe)
 
 ## Installation
 
